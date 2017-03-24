@@ -26,14 +26,21 @@ import butterknife.Unbinder;
  */
 
 public class MovieArrayAdapter extends ArrayAdapter<Movie> {
-    // Butterknife alternatives
-    @BindView(R.id.tvTitle) TextView tvTitle;
-    @BindView(R.id.tvOverview) TextView tvOverview;
-    @BindView(R.id.ivMovieImage)ImageView ivImage;
     private Unbinder unbinder;
 
     public MovieArrayAdapter(Context context, List<Movie> movies) {
         super(context, android.R.layout.simple_list_item_1, movies);
+    }
+
+    static class ViewHolder {
+        // Butterknife alternatives
+        @BindView(R.id.tvTitle) TextView tvTitle;
+        @BindView(R.id.tvOverview) TextView tvOverview;
+        @BindView(R.id.ivMovieImage)ImageView ivImage;
+
+        public ViewHolder(View view) {
+            ButterKnife.bind(this, view);
+        }
     }
 
 
@@ -44,11 +51,18 @@ public class MovieArrayAdapter extends ArrayAdapter<Movie> {
         Movie movie = getItem(position);
 
         // check the existing view being reused
+        ViewHolder viewHolder;
         if (convertView == null) {
+            // no view to re-use. inflate new view
             LayoutInflater inflater = LayoutInflater.from(getContext());
             convertView = inflater.inflate(R.layout.item_movie, parent, false);
+            viewHolder = new ViewHolder(convertView);
+
+            // cache viewHolder object in fresh view
+            convertView.setTag(viewHolder);
+        } else {
+            viewHolder = (ViewHolder) convertView.getTag();
         }
-        unbinder = ButterKnife.bind(this, convertView);
 
         // find the views (traditional way)
         // ImageView ivImage = (ImageView) convertView.findViewById(R.id.ivMovieImage);
@@ -56,12 +70,11 @@ public class MovieArrayAdapter extends ArrayAdapter<Movie> {
         // TextView tvOverview = (TextView) convertView.findViewById(R.id.tvOverview);
 
         // clear out image from convertView
-        ivImage.setImageResource(0);
-
+        viewHolder.ivImage.setImageResource(0);
 
         // populate data
-        tvTitle.setText(movie.getOriginalTitle());
-        tvOverview.setText(movie.getOverview());
+        viewHolder.tvTitle.setText(movie.getOriginalTitle());
+        viewHolder.tvOverview.setText(movie.getOverview());
 
         String imagePath;
         int orientation = getContext().getResources().getConfiguration().orientation;
@@ -71,12 +84,12 @@ public class MovieArrayAdapter extends ArrayAdapter<Movie> {
             Picasso.with(getContext()).load(imagePath)
                     .placeholder(R.drawable.movie_placeholder)
                     .error(R.drawable.movie_poster_error)
-                    .into(ivImage);
+                    .into(viewHolder.ivImage);
 
         } else if (orientation == Configuration.ORIENTATION_LANDSCAPE) {
             imagePath = movie.getBackdropPath();
             Picasso.with(getContext()).load(imagePath)
-                    .into(ivImage);
+                    .into(viewHolder.ivImage);
         }
 
 
