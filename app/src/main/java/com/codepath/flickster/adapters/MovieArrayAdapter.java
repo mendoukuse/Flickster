@@ -20,6 +20,7 @@ import java.util.List;
 import butterknife.BindView;
 import butterknife.ButterKnife;
 import butterknife.Unbinder;
+import jp.wasabeef.picasso.transformations.RoundedCornersTransformation;
 
 /**
  * Created by christine_nguyen on 3/23/17.
@@ -84,11 +85,13 @@ public class MovieArrayAdapter extends ArrayAdapter<Movie> {
             Picasso.with(getContext()).load(imagePath)
                     .placeholder(R.drawable.movie_placeholder)
                     .error(R.drawable.movie_poster_error)
+                    .transform(new RoundedCornersTransformation(10, 10))
                     .into(viewHolder.ivImage);
 
         } else if (orientation == Configuration.ORIENTATION_LANDSCAPE) {
             imagePath = movie.getBackdropPath();
             Picasso.with(getContext()).load(imagePath)
+                    .transform(new RoundedCornersTransformation(10, 10))
                     .into(viewHolder.ivImage);
         }
 
