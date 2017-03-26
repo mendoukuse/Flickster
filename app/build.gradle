@@ -27,9 +27,16 @@ dependencies {
     compile 'com.android.support:appcompat-v7:25.3.0'
     compile 'com.android.support.constraint:constraint-layout:1.0.0'
     compile 'com.loopj.android:android-async-http:1.4.9'
-    compile 'com.squareup.picasso:picasso:2.5.2'
     compile "com.android.support:percent:25.3.0"
     compile 'com.jakewharton:butterknife:8.4.0'
     annotationProcessor 'com.jakewharton:butterknife-compiler:8.4.0'
+    compile 'com.squareup.okhttp3:okhttp:3.6.0'
     testCompile 'junit:junit:4.12'
+}
+
+repositories {
+    maven { url "https://oss.sonatype.org/content/repositories/snapshots" }
+}
+dependencies {
+    compile 'com.squareup.picasso:picasso:2.6.0-SNAPSHOT'
 }

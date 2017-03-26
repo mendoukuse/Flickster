@@ -15,13 +15,20 @@ import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 
+import java.io.IOException;
 import java.util.ArrayList;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
 import cz.msebera.android.httpclient.Header;
+import okhttp3.Call;
+import okhttp3.Callback;
+import okhttp3.OkHttpClient;
+import okhttp3.Request;
+import okhttp3.Response;
 
 public class MovieActivity extends AppCompatActivity {
+    static final String MOVIE_API_URL = "https://api.themoviedb.org/3/movie/now_playing?api_key=a07e22bc18f5cb106bfe4cc1f83ad8ed";
     @BindView(R.id.lvMovies) ListView lvItems;
 
     ArrayList<Movie> movies;
@@ -38,9 +45,49 @@ public class MovieActivity extends AppCompatActivity {
         movieAdapter = new MovieArrayAdapter(this, movies);
         lvItems.setAdapter(movieAdapter);
 
+        // makeAsyncHttpRequest(MOVIE_API_URL);
+        makeOkHttpRequest(MOVIE_API_URL);
+    }
 
-        String url =  "https://api.themoviedb.org/3/movie/now_playing?api_key=a07e22bc18f5cb106bfe4cc1f83ad8ed";
+    private void makeOkHttpRequest(String url) {
 
+        // This should be a singleton. Find out if this is a singleton out of the box
+        OkHttpClient client = new OkHttpClient();
+        Request request = new Request.Builder()
+                .url(url).build();
+
+        client.newCall(request).enqueue(new Callback() {
+
+            @Override
+            public void onFailure(Call call, IOException e) {
+                e.printStackTrace();
+            }
+
+            @Override
+            public void onResponse(Call call, Response response) throws IOException {
+                if (!response.isSuccessful()) {
+                    throw new IOException("Unexpected code " + response);
+                }
+
+                final String responseData = response.body().string();
+
+                MovieActivity.this.runOnUiThread(new Runnable() {
+                    @Override
+                    public void run() {
+                        try {
+                            JSONObject json = new JSONObject(responseData);
+                            loadMoviesFromApiResponse((JSONArray) json.get("results"));
+                        } catch (JSONException e) {
+                            e.printStackTrace();
+                        }
+                    }
+                });
+            }
+        });
+
+    }
+
+    private void makeAsyncHttpRequest(String url) {
         AsyncHttpClient client = new AsyncHttpClient();
 
         client.get(url, new JsonHttpResponseHandler(){
@@ -50,9 +97,7 @@ public class MovieActivity extends AppCompatActivity {
 
                 try {
                     movieJsonResults = response.getJSONArray("results");
-                    movies.addAll(Movie.fromJSONArray(movieJsonResults));
-                    movieAdapter.notifyDataSetChanged();
-                    Log.d("DEBUG", movies.toString());
+                    loadMoviesFromApiResponse(movieJsonResults);
                 } catch (JSONException e) {
                     e.printStackTrace();
                 }
@@ -63,5 +108,11 @@ public class MovieActivity extends AppCompatActivity {
                 super.onFailure(statusCode, headers, throwable, errorResponse);
             }
         });
+    }
+
+    private void loadMoviesFromApiResponse(JSONArray movieJsonResults) {
+        movies.addAll(Movie.fromJSONArray(movieJsonResults));
+        movieAdapter.notifyDataSetChanged();
+        Log.d("DEBUG", movies.toString());
     }
 }
