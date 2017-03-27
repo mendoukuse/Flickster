@@ -1,8 +1,12 @@
 package com.codepath.flickster.activities;
 
+import android.content.Intent;
+import android.content.res.Configuration;
 import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
 import android.util.Log;
+import android.view.View;
+import android.widget.AdapterView;
 import android.widget.ListView;
 
 import com.codepath.flickster.R;
@@ -47,10 +51,10 @@ public class MovieActivity extends AppCompatActivity {
 
         // makeAsyncHttpRequest(MOVIE_API_URL);
         makeOkHttpRequest(MOVIE_API_URL);
+        setupListViewListener();
     }
 
     private void makeOkHttpRequest(String url) {
-
         // This should be a singleton. Find out if this is a singleton out of the box
         OkHttpClient client = new OkHttpClient();
         Request request = new Request.Builder()
@@ -114,5 +118,31 @@ public class MovieActivity extends AppCompatActivity {
         movies.addAll(Movie.fromJSONArray(movieJsonResults));
         movieAdapter.notifyDataSetChanged();
         Log.d("DEBUG", movies.toString());
+    }
+
+    private void setupListViewListener() {
+        lvItems.setOnItemClickListener(
+                new AdapterView.OnItemClickListener() {
+
+                    @Override
+                    public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
+                        Intent i = new Intent(MovieActivity.this, MovieDetailsActivity.class);
+                        Movie m = movies.get(position);
+                        i.putExtra("originalTitle", m.getOriginalTitle());
+                        i.putExtra("overview", m.getOverview());
+                        i.putExtra("rating", m.getRating());
+                        i.putExtra("releaseDate", m.getReleaseDate());
+
+                        int orientation = getResources().getConfiguration().orientation;
+                        if (orientation == Configuration.ORIENTATION_PORTRAIT) {
+                            i.putExtra("imagePath", m.getBackdropPath());
+                        } else if (orientation == Configuration.ORIENTATION_LANDSCAPE) {
+                            i.putExtra("imagePath", m.getPosterPath());
+                        }
+
+                        startActivity(i);
+                    }
+                }
+        );
     }
 }
