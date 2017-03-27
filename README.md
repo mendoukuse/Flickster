@@ -46,12 +46,17 @@ GIF created with [LiceCap](http://www.cockos.com/licecap/).
 
 ## Notes
 
-Describe any challenges encountered while building the app.
+Challenges and Questions 
+- I couldn't quite figure out how to get the movie poster images to resize correctly in a vertical view. Calling .fit() would cause my images to disappear and I wasn't sure if that was because the images needed explicit sizes or not. 
+- Is the OkHttp Client a Singleton by default?
+- What is the best way to create placeholder graphics. I figured out how to use colored shapes as image placeholders but I wanted to make a nice placeholder and couldn't figure out how. 
+
 
 ## Open-source libraries used
 
 - [Android Async HTTP](https://github.com/loopj/android-async-http) - Simple asynchronous HTTP requests with JSON parsing
 - [Picasso](http://square.github.io/picasso/) - Image loading and caching library for Android
+- [OkHTTP](https://github.com/square/okhttp) - An HTTP+HTTP/2 client for Android and Java applications
 
 ## License
 
