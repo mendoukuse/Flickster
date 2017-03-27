@@ -39,8 +39,8 @@ The following **additional** features are implemented:
 
 Here's a walkthrough of implemented user stories:
 
-<img src='https://github.com/mendoukuse/Flickster/Flickster (Landscape View).gif' title='Video Walkthrough' width='' alt='Video Walkthrough' />
-<img src='https://github.com/mendoukuse/Flickster/Flickster (Portrait View).gif' title='Video Walkthrough 2' width='' alt='Video Walkthrough 2' />
+<img src='https://github.com/mendoukuse/Flickster/blob/master/images/Flickster%20(Landscape%20View).gif' title='Video Walkthrough' width='' alt='Video Walkthrough' />
+<img src='https://github.com/mendoukuse/Flickster/blob/master/images/Flickster%20(Portrait%20View).gif' title='Video Walkthrough 2' width='' alt='Video Walkthrough 2' />
 
 GIF created with [LiceCap](http://www.cockos.com/licecap/).
 
